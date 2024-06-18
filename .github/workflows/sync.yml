@@ -13,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        repository: ledccn/iyuuplus-dev
+        repository: anxinJ/iyuuplus-dev
         ref: master
         token: ${{ secrets.PAT }}
     
