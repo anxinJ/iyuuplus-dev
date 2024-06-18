@@ -1,4 +1,4 @@
-name: Sync Fork and Trigger Workflow
+name: Sync Fork
 
 on:
   schedule:
@@ -16,11 +16,14 @@ jobs:
         repository: ledccn/iyuuplus-dev
         ref: master
         token: ${{ secrets.PAT }}
-
+    
     - name: Set up git
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
+
+    - name: Add upstream repository
+      run: git remote add upstream https://github.com/ledccn/iyuuplus-dev.git
 
     - name: Fetch upstream
       run: git fetch upstream
@@ -32,19 +35,3 @@ jobs:
       run: git push origin master
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
-
-  trigger:
-    needs: sync
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Trigger dependent workflow
-      run: |
-        curl -X POST \
-          -H "Accept: application/vnd.github.v3+json" \
-          -H "Authorization: token ${{ secrets.PAT }}" \
-          https://api.github.com/repos/anxinJ/iyuuplus-dev/actions/workflows/build.yml/dispatches \
-          -d '{"ref":"master"}'
